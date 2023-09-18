@@ -1,12 +1,13 @@
 // NewPostForm.js
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { makeHeaders } from './AuthHelper';
 
 const APIURL = `https://strangers-things.herokuapp.com/api/2302-ACC-ET-WEB-PT-D`;
 
-const NewPostForm = ({ onPostCreated }) => {
+const NewPostForm = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [onPostCreated] = useState(null)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
