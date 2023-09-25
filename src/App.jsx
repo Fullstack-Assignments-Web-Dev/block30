@@ -1,27 +1,44 @@
-import { Routes, Route } from "react-router-dom";
-import HeaderNav from './components/HeaderNav.jsx';
-import Posts from './components/Posts.jsx';
-import Profile from './components/Profile.jsx';
-import Login from './components/Login.jsx';
-import Register from './components/Register.jsx';
-import { useState } from "react";
-import './App.css';
+import Home from './components/Home.jsx'
+import Posts from './components/Posts.jsx'
+import Profile from './components/Profile.jsx'
+import NavBar from './components/NavBar.jsx'
+import { Routes, Route } from 'react-router-dom' 
+import LoginForm from './components/forms/LoginForm.jsx'
+import RegisterForm from './components/forms/RegisterForm.jsx'
+import { useEffect, useState } from 'react'
+import { isLoggedIn } from './components/AuthHelper.jsx'
 
 function App() {
-  const [token, setToken] = useState(null)
+  const [authenticated, setAuthenticated] = useState(isLoggedIn());
 
+  useEffect(() => {
+    const checkAuthentication = () => {
+      setAuthenticated(isLoggedIn());
+    };
+    window.addEventListener("authChange", checkAuthentication);
+    return () => {
+      window.removeEventListener('authChange', checkAuthentication);
+    };
+  }, []);
 
   return (
-    <>  
-      <HeaderNav />
-      
-      <Routes>
-        <Route path="/posts" element={<Posts />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/login" element={<Login token={token} setToken={setToken}/>} />
-        <Route path="/register" element={<Register token={token} setToken={setToken}/>} />
-    </Routes>
-
+    <>
+    <div id="container">
+   
+      <div id="navbar">
+        <NavBar authenticated={authenticated} setAuthenticated={setAuthenticated}  />
+        </div>
+      <div id="main-section">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/posts" element={<Posts />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/register" element={<RegisterForm />} />
+          <Route path="/login" element={<LoginForm />} />
+          
+        </Routes>
+      </div>
+    </div>
     </>
   )
 }

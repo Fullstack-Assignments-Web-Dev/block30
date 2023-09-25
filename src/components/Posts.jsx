@@ -1,45 +1,43 @@
-import {useEffect, useState} from "react";
-import NewPost from './NewPost.jsx';
-  
-  const APIURL = `https://strangers-things.herokuapp.com/api/2302-ACC-ET-WEB-PT-D`;
-  
-  
-  function Posts () {
-      const [posts, setPosts] = useState ([]);
-  
-      useEffect(() => {
-          fetch(APIURL + '/posts')
-            .then(response => response.json())
-            .then(data => {
-              console.log('Fetched data:', data);
+import { useState, useEffect } from 'react';
+import '../App.css'
+
+
+const APIURL = `https://strangers-things.herokuapp.com/api/2302-ACC-ET-WEB-PT-D`;
+
+export default function Posts() {
+    const [posts, setPosts] = useState([]);
+
+const fetchPosts = async () => {
+    try { 
+        const response = await fetch(`${APIURL}/posts`);
+        const data = await response.json();
+        setPosts(data.data.posts);
+    }
+    catch (error) {
+        console.log(error);
+    }}
+
+    useEffect(() => {   
+        fetchPosts();
+    }
+    , []);
+
+
+    return (
+        <>
+        <div className='posts-header'>
+        <div className='posts-header-title'><h1>Posts</h1></div></div>
         
-          
-              const fetchedPosts = data.data.posts;
-        
-              setPosts(fetchedPosts);
-            })
-            .catch(error => console.error('Error fetching posts:', error));
-        }, []);
-  
-      const postItems = posts.map (post => (
-          <div key={post._id}>
-              <h2>{post.title}</h2>
-              <p>Price: {post.price}</p>
-              <p>Description: {post.description}</p>
-          </div>
-      ));
-  
-      const handlePostCreated = (newPost) => {
-          // Update state with the new post
-          setPosts([...posts, newPost]);
-        };
-  
-      return (
-          <div>
-              {postItems}
-              <NewPost onPostCreated={handlePostCreated} />
-          </div>
-      );
-  }
-  
-  export default Posts;
+        <div className='posts-container'>
+            {posts.map((post) => (
+                <div className='post-item' key={post._id}>
+                    <div className='post-title'><h2>{post.title}</h2></div>
+                    <div className='post-price'><p>Price: {post.price}</p></div>
+                    <div className='post-description'><p>Description: {post.description}</p></div>
+                </div>
+            ))}
+      
+        </div>
+        </>
+    )
+}
